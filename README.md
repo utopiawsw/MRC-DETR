@@ -7,4 +7,8 @@
 Dependencies and Installation
 python=3.10
 pytorch=2.40
-
+Others:
+git clone https://github.com/utopiawsw/MRC-DETR.git
+extract the files
+cd MRC-DETR
+pip install -e 
