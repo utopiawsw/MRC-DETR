@@ -1,0 +1,31 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# RT-DETR-x object detection model with P3-P5 outputs. For details see https://docs.ultralytics.com/models/rtdetr
+
+# Parameters
+nc: 4 # number of classes
+scales: # model compound scaling constants, i.e. 'model=yolov8n-cls.yaml' will call yolov8-cls.yaml with scale 'n'
+  # [depth, width, max_channels]
+  x: [1.00, 1.00, 2048]
+
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, HGStem, [32, 64]] # 0-P2/4
+  - [-1, 6, HGBlock, [64, 128, 3]] # stage 1
+
+  - [-1, 1, DWConv, [128, 3, 2, 1, False]] # 2-P3/8
+  - [-1, 6, HGBlock, [128, 512, 3]]
+  - [-1, 6, HGBlock, [128, 512, 3, False, True]] # 4-stage 2
+
+  - [-1, 1, DWConv, [512, 3, 2, 1, False]] # 5-P3/16
+  - [-1, 6, HGBlock, [256, 1024, 5, True, False]] # cm, c2, k, light, shortcut
+  - [-1, 6, HGBlock, [256, 1024, 5, True, True]]
+  - [-1, 6, HGBlock, [256, 1024, 5, True, True]]
+  - [-1, 6, HGBlock, [256, 1024, 5, True, True]]
+  - [-1, 6, HGBlock, [256, 1024, 5, True, True]] # 10-stage 3
+
+  - [-1, 1, DWConv, [1024, 3, 2, 1, False]] # 11-P4/32
+  - [-1, 6, HGBlock, [512, 2048, 5, True, False]]
+  - [-1, 6, HGBlock, [512, 2048, 5, True, True]] # 13-stage 4
+
+head:
+  - [-1, 1, Classify, [nc]] # Classify
